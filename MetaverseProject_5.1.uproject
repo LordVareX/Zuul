@@ -1,0 +1,47 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.1",
+	"Category": "",
+	"Description": "",
+	"Plugins": [
+		{
+			"Name": "RemoteSession",
+			"Enabled": true
+		},
+		{
+			"Name": "WebBrowserWidget",
+			"Enabled": true
+		},
+		{
+			"Name": "OWLLivestreamingToolkit",
+			"Enabled": false,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/92307b570d474fbc87592b973ce82e3b",
+			"SupportedTargetPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "ReadyPlayerMe",
+			"Enabled": false
+		},
+		{
+			"Name": "RpmAvatarCreator",
+			"Enabled": false
+		},
+		{
+			"Name": "glTFRuntime",
+			"Enabled": false,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/d2ed3709933d4608a3a8dd746cbc045d"
+		},
+		{
+			"Name": "PixelStreaming",
+			"Enabled": true
+		}
+	],
+	"TargetPlatforms": [
+		"HoloLens",
+		"TVOS",
+		"WindowsNoEditor",
+		"IOS"
+	]
+}
