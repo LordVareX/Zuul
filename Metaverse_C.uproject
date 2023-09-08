@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{ABD45961-463F-5E40-0575-B09FE3948031}",
+	"EngineAssociation": "{1B7D1E04-444F-C169-6D07-17AA7715FE0B}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -22,6 +22,11 @@
 			"Name": "awsSDK",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/eee4bef24c9d429887ddcc107a5a9b4d"
+		},
+		{
+			"Name": "EOSIntegrationKit",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/dba0aa05bdd144e69405653a387ad63e"
 		}
 	]
 }
