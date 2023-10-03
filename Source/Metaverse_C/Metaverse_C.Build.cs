@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using System.IO;
 
 public class Metaverse_C : ModuleRules
 {
@@ -11,6 +12,12 @@ public class Metaverse_C : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
+
+		if(Target.Platform == UnrealTargetPlatform.Android)
+		{
+			var manifestFile = Path.Combine(ModuleDirectory, "AndroidSanitizePermission_UPL.xml");
+			AdditionalPropertiesForReceipt.Add(Name: "AndroidPlugin", Value: manifestFile);
+		}
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
