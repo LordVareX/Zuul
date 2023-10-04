@@ -31,6 +31,11 @@
 		{
 			"Name": "NDIIOPlugin",
 			"Enabled": false
+		},
+		{
+			"Name": "glTFRuntime",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/d2ed3709933d4608a3a8dd746cbc045d"
 		}
 	]
 }
