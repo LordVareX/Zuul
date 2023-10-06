@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{ABD45961-463F-5E40-0575-B09FE3948031}",
+	"EngineAssociation": "{37E6653C-4ECF-A979-44D8-B580DD7552C8}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -36,6 +36,10 @@
 			"Name": "glTFRuntime",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/d2ed3709933d4608a3a8dd746cbc045d"
+		},
+		{
+			"Name": "ReadyPlayerMe",
+			"Enabled": true
 		}
 	]
 }
