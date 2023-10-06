@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{37E6653C-4ECF-A979-44D8-B580DD7552C8}",
+	"EngineAssociation": "{ABD45961-463F-5E40-0575-B09FE3948031}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -39,6 +39,10 @@
 		},
 		{
 			"Name": "ReadyPlayerMe",
+			"Enabled": true
+		},
+		{
+			"Name": "RpmAvatarCreator",
 			"Enabled": true
 		}
 	]
