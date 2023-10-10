@@ -40,6 +40,10 @@
 		{
 			"Name": "ReadyPlayerMe",
 			"Enabled": true
+		},
+		{
+			"Name": "RpmAvatarCreator",
+			"Enabled": true
 		}
 	]
 }
