@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{ABD45961-463F-5E40-0575-B09FE3948031}",
+	"EngineAssociation": "{E2CF5CA4-4400-F3F7-3223-2E94D22D3261}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -44,6 +44,20 @@
 		{
 			"Name": "RpmAvatarCreator",
 			"Enabled": true
+		},
+		{
+			"Name": "AndroidCamera",
+			"Enabled": true
+		},
+		{
+			"Name": "EasyEmail",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/4cf6d62feb37458ca753a05961f9628a"
+		},
+		{
+			"Name": "OneSignal",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/c1aa51891e43467dbf854748c86237be"
 		}
 	]
 }
