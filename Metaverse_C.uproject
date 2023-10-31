@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"CoreUObject"
+				"CoreUObject",
+				"UMG"
 			]
 		}
 	],
@@ -60,7 +61,7 @@
 		},
 		{
 			"Name": "OneSignal",
-			"Enabled": true,
+			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/c1aa51891e43467dbf854748c86237be"
 		},
 		{
@@ -74,6 +75,10 @@
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "DiscordGSDK",
+			"Enabled": false
 		}
 	]
 }
