@@ -19,9 +19,14 @@ public:
 	// Sets default values for this actor's properties
 	AWindowCaptureActor();
 
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
 	UTexture2D* Start();
+
+	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
+	void Stop();
 
 	UFUNCTION()
 	void OnChangeTexture(UTexture2D* NewTexture);
@@ -30,17 +35,27 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void BeginDestroy() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
 	FCaptureMachineProperties Properties;
 
-	UPROPERTY(BlueprintReadOnly, Category = SceneCapture)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = SceneCapture)
 	class UTexture2D* TextureTarget;
 
 	UPROPERTY(BlueprintAssignable, Category = SceneCapture)
 	FWindowCaptureActorChangeTexture ChangeTexture;
 
+	UFUNCTION()
+	void OnRep_TextureTarget(); // Replication function
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* SceneComponent;
+
 protected:
 	UPROPERTY(Transient)
 	UCaptureMachine* CaptureMachine = nullptr;
+
 
 };

@@ -21,6 +21,17 @@ class METAVERSE_C_API UWindowCaptureWidget : public UUserWidget
 public:
 	UWindowCaptureWidget(const FObjectInitializer& ObjectInitializer);
 
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
+	void StartCapture();
+
+	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
+	void SelectWindow(int32 Index);
+
+	UFUNCTION(BlueprintPure, Category = WindowCapture2D)
+	TArray<FString> GetAvailableWindows();
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
 	UTexture2D* Start();
@@ -32,10 +43,10 @@ public:
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
 	virtual void BeginDestroy() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
 	FCaptureMachineProperties Properties;
 
-	UPROPERTY(BlueprintReadOnly, Category = SceneCapture)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = SceneCapture)
 	class UTexture2D* TextureTarget;
 
 	UPROPERTY(BlueprintAssignable, Category = SceneCapture)
@@ -44,5 +55,7 @@ public:
 protected:
 	UPROPERTY(Transient)
 	UCaptureMachine* CaptureMachine = nullptr;
+
+	TArray<FString> AvailableWindows;
 	
 };
