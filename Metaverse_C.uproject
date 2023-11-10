@@ -79,6 +79,11 @@
 		{
 			"Name": "DiscordGSDK",
 			"Enabled": false
+		},
+		{
+			"Name": "RuntimeTextureCompression",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/efd0b4af4d6b4a9db5218032e3e26de9"
 		}
 	]
 }

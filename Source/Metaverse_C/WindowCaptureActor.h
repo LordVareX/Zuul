@@ -21,6 +21,12 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
+	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
+	void SelectWindow(int32 Index);
+
+	UFUNCTION(BlueprintPure, Category = WindowCapture2D)
+	TArray<FString> GetAvailableWindows();
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
 	UTexture2D* Start();
@@ -38,7 +44,7 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
 	FCaptureMachineProperties Properties;
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = SceneCapture)
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = SceneCapture)
 	class UTexture2D* TextureTarget;
 
 	UPROPERTY(BlueprintAssignable, Category = SceneCapture)
@@ -56,6 +62,8 @@ public:
 protected:
 	UPROPERTY(Transient)
 	UCaptureMachine* CaptureMachine = nullptr;
+
+	TArray<FString> AvailableWindows;
 
 
 };

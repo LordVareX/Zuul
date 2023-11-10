@@ -32,9 +32,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = WindowCapture2D)
 	TArray<FString> GetAvailableWindows();
 
+	UFUNCTION(Server, Reliable)
+	void Server_ChangeTexture(UTexture2D* NewTexture);
+	void Server_ChangeTexture_Implementation(UTexture2D* NewTexture);
+	bool Server_ChangeTexture_Validate(UTexture2D* NewTexture);
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
 	UTexture2D* Start();
+
+	UFUNCTION(BlueprintCallable, Category = WindowCapture2D)
+	void Stop();
 
 	UFUNCTION()
 	void OnChangeTexture(UTexture2D* NewTexture);
@@ -46,7 +54,7 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = WindowCapture2D)
 	FCaptureMachineProperties Properties;
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = SceneCapture)
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = SceneCapture)
 	class UTexture2D* TextureTarget;
 
 	UPROPERTY(BlueprintAssignable, Category = SceneCapture)

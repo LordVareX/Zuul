@@ -4,7 +4,9 @@
 #include "Engine/Texture2D.h"
 #include "Net/UnrealNetwork.h"
 #include "Materials/MaterialInstanceDynamic.h"
-
+#include <Windows.h>
+#define TRUE 1
+#define FALSE 0
 
 AWindowCaptureActor::AWindowCaptureActor()
 {
@@ -98,4 +100,38 @@ void AWindowCaptureActor::OnRep_TextureTarget()
 		// Update the dynamic material instance on the mesh with the new texture
 		DynamicMaterialInstance->SetTextureParameterValue("Tex", TextureTarget);
 	}
+}
+
+void AWindowCaptureActor::SelectWindow(int32 Index)
+{
+	if (CaptureMachine && Index >= 0 && Index < AvailableWindows.Num())
+	{
+		// Set the selected window title in CaptureMachine
+		CaptureMachine->Properties.CaptureTargetTitle = AvailableWindows[Index];
+	}
+}
+
+TArray<FString> AWindowCaptureActor::GetAvailableWindows()
+{
+	AvailableWindows.Empty(); // Clear the existing window list
+
+	// Callback function to receive window titles
+	auto EnumWindowsProc = [](HWND hwnd, LPARAM lParam) -> BOOL {
+		TCHAR title[256];
+		GetWindowText(hwnd, title, ARRAYSIZE(title));
+		FString windowTitle = title;
+		if (!windowTitle.IsEmpty()) {
+			// Add the window title to the AvailableWindows array
+			((TArray<FString>*)lParam)->Add(windowTitle);
+		}
+		return TRUE;
+		};
+
+	// Enumerate all open windows and collect their titles
+	if (EnumWindows(EnumWindowsProc, (LPARAM)&AvailableWindows)) {
+		return AvailableWindows;
+	}
+
+	return AvailableWindows; // Return the list of window titles
+
 }

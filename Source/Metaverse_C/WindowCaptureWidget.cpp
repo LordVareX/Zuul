@@ -3,6 +3,7 @@
 #include "WindowCaptureWidget.h"
 #include "Engine/Texture2D.h"
 #include "Net/UnrealNetwork.h"
+#include "Engine/NetDriver.h"
 #include <Windows.h>
 #define TRUE 1
 #define FALSE 0
@@ -56,10 +57,20 @@ UTexture2D* UWindowCaptureWidget::Start()
 
 	CaptureMachine->Properties = Properties;
 
-	CaptureMachine->ChangeTexture.AddDynamic(this, &UWindowCaptureWidget::OnChangeTexture);
+	CaptureMachine->ChangeTexture.AddDynamic(this, &UWindowCaptureWidget::Server_ChangeTexture);
 	CaptureMachine->Start();
 
+
 	return CaptureMachine->CreateTexture();
+}
+
+void UWindowCaptureWidget::Stop()
+{
+	if (CaptureMachine)
+	{
+		CaptureMachine->Stop();
+		CaptureMachine->Dispose();
+	}
 }
 
 void UWindowCaptureWidget::StartCapture()
@@ -117,4 +128,15 @@ TArray<FString> UWindowCaptureWidget::GetAvailableWindows()
 void UWindowCaptureWidget::OnChangeTexture(UTexture2D* _NewTexture)
 {
 	ChangeTexture.Broadcast(_NewTexture);
+}
+
+void UWindowCaptureWidget::Server_ChangeTexture_Implementation(UTexture2D* NewTexture)
+{
+	OnChangeTexture(NewTexture);
+	ChangeTexture.Broadcast(NewTexture);
+}
+
+bool UWindowCaptureWidget::Server_ChangeTexture_Validate(UTexture2D* NewTexture)
+{
+	return true;
 }
