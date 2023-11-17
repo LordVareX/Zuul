@@ -65,5 +65,8 @@ protected:
 	UCaptureMachine* CaptureMachine = nullptr;
 
 	TArray<FString> AvailableWindows;
+
+	
+
 	
 };

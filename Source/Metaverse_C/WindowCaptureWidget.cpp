@@ -7,6 +7,8 @@
 #include <Windows.h>
 #define TRUE 1
 #define FALSE 0
+#include <Psapi.h>
+#pragma comment(lib, "Psapi.lib")
 
 UWindowCaptureWidget::UWindowCaptureWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -100,29 +102,121 @@ void UWindowCaptureWidget::SelectWindow(int32 Index)
 	}
 }
 
+//TArray<FString> UWindowCaptureWidget::GetAvailableWindows()
+//{
+//	AvailableWindows.Empty(); // Clear the existing window list
+//
+//	// Callback function to receive window titles
+//	auto EnumWindowsProc = [](HWND hwnd, LPARAM lParam) -> BOOL {
+//		TCHAR title[256];
+//		GetWindowText(hwnd, title, ARRAYSIZE(title));
+//		FString windowTitle = title;
+//		if (!windowTitle.IsEmpty()) {
+//			// Add the window title to the AvailableWindows array
+//			((TArray<FString>*)lParam)->Add(windowTitle);
+//		}
+//		return TRUE;
+//		};
+//
+//	// Enumerate all open windows and collect their titles
+//	if (EnumWindows(EnumWindowsProc, (LPARAM)&AvailableWindows)) {
+//		return AvailableWindows;
+//	}
+//
+//	return AvailableWindows; // Return the list of window titles
+//
+//}
+
+//BOOL CALLBACK EnumWindowsCallback(HWND hwnd, LPARAM lParam) {
+//	auto* windowList = reinterpret_cast<TArray<FString>*>(lParam);
+//	if (windowList != nullptr) {
+//		TCHAR title[256];
+//		GetWindowText(hwnd, title, ARRAYSIZE(title));
+//		FString windowTitle = title;
+//
+//		if (!windowTitle.IsEmpty() && IsWindowVisible(hwnd)) {
+//			windowList->Add(windowTitle);
+//		}
+//	}
+//	return TRUE;
+//}
+//
+//TArray<FString> UWindowCaptureWidget::GetAvailableWindows()
+//{
+//	AvailableWindows.Empty(); // Clear the existing window list
+//
+//	// Enumerate all open windows and collect their titles
+//	if (!EnumWindows(&EnumWindowsCallback, reinterpret_cast<LPARAM>(&AvailableWindows))) {
+//		// Handle enumeration failure here if necessary
+//	}
+//
+//	return AvailableWindows; // Return the list of window titles
+//}
+
+//TArray<FString> UWindowCaptureWidget::GetAvailableWindows()
+//{
+//	AvailableWindows.Empty(); // Clear the existing window list
+//
+//	// Callback function to receive window titles
+//	auto EnumWindowsProc = [](HWND hwnd, LPARAM lParam) -> BOOL {
+//		auto* windowList = reinterpret_cast<TArray<FString>*>(lParam);
+//		if (windowList != nullptr) {
+//			TCHAR title[256];
+//			GetWindowText(hwnd, title, ARRAYSIZE(title));
+//			FString windowTitle = title;
+//
+//			if (!windowTitle.IsEmpty() && IsWindowVisible(hwnd)) {
+//				DWORD processId;
+//				GetWindowThreadProcessId(hwnd, &processId);
+//				HANDLE processHandle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
+//				if (processHandle != NULL) {
+//					TCHAR executablePath[MAX_PATH];
+//					if (GetModuleFileNameEx(processHandle, NULL, executablePath, MAX_PATH) > 0) {
+//						FString appName = executablePath;
+//						// Extract the app name from the path
+//						int32 LastIndex;
+//						if (appName.FindLastChar('\\', LastIndex)) {
+//							appName = appName.RightChop(LastIndex + 1);
+//						}
+//						windowList->Add(appName);
+//					}
+//					CloseHandle(processHandle);
+//				}
+//			}
+//		}
+//		return TRUE;
+//		};
+//
+//	// Enumerate all open windows and collect their titles
+//	if (!EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&AvailableWindows))) {
+//		// Handle enumeration failure here if necessary
+//	}
+//
+//	return AvailableWindows; // Return the list of application names
+//}
+
 TArray<FString> UWindowCaptureWidget::GetAvailableWindows()
 {
 	AvailableWindows.Empty(); // Clear the existing window list
 
 	// Callback function to receive window titles
 	auto EnumWindowsProc = [](HWND hwnd, LPARAM lParam) -> BOOL {
-		TCHAR title[256];
-		GetWindowText(hwnd, title, ARRAYSIZE(title));
-		FString windowTitle = title;
-		if (!windowTitle.IsEmpty()) {
-			// Add the window title to the AvailableWindows array
-			((TArray<FString>*)lParam)->Add(windowTitle);
+		if (IsWindowVisible(hwnd) && GetAncestor(hwnd, GA_ROOT) == hwnd) {
+			TCHAR title[256];
+			GetWindowText(hwnd, title, ARRAYSIZE(title));
+			FString windowTitle = title;
+
+			if (!windowTitle.IsEmpty()) {
+				((TArray<FString>*)lParam)->Add(windowTitle);
+			}
 		}
 		return TRUE;
 		};
 
 	// Enumerate all open windows and collect their titles
-	if (EnumWindows(EnumWindowsProc, (LPARAM)&AvailableWindows)) {
-		return AvailableWindows;
-	}
+	EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&AvailableWindows));
 
 	return AvailableWindows; // Return the list of window titles
-
 }
 
 void UWindowCaptureWidget::OnChangeTexture(UTexture2D* _NewTexture)
