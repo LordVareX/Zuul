@@ -9,7 +9,7 @@ public class Metaverse_C : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Slate", "SlateCore", "RenderCore", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Slate", "SlateCore", "RenderCore", "UMG", "Http", "Json", "JsonUtilities" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
