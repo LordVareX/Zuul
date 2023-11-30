@@ -84,6 +84,11 @@
 			"Name": "RuntimeTextureCompression",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/efd0b4af4d6b4a9db5218032e3e26de9"
+		},
+		{
+			"Name": "FBP",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/6805c8b574514c7d96ab081d52330da5"
 		}
 	]
 }
