@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{ABD45961-463F-5E40-0575-B09FE3948031}",
+	"EngineAssociation": "{E2CF5CA4-4400-F3F7-3223-2E94D22D3261}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -89,6 +89,11 @@
 			"Name": "FBP",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/6805c8b574514c7d96ab081d52330da5"
+		},
+		{
+			"Name": "LowEntryExtStdLib",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/846c2ad08f164f45b0335ecebf85361e"
 		}
 	]
 }
