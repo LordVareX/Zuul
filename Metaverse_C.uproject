@@ -47,10 +47,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "RpmAvatarCreator",
-			"Enabled": true
-		},
-		{
 			"Name": "AndroidCamera",
 			"Enabled": true
 		},

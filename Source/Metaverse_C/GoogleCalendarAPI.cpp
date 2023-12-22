@@ -4,9 +4,9 @@
 #include "GoogleCalendarAPI.h"
 #include "HttpModule.h"
 
-FString UGoogleCalendarAPI::ClientID = "YOUR_CLIENT_ID";
-FString UGoogleCalendarAPI::ClientSecret = "YOUR_CLIENT_SECRET";
-FString UGoogleCalendarAPI::RedirectURI = "YOUR_REDIRECT_URI";
+FString UGoogleCalendarAPI::ClientID = "374383116907-hqnt573rrrrh0k5g6odf2otmje1pfmv1.apps.googleusercontent.com";
+FString UGoogleCalendarAPI::ClientSecret = "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";
+FString UGoogleCalendarAPI::RedirectURI = "http://localhost/";
 FString UGoogleCalendarAPI::AuthorizationCode = "";
 FString UGoogleCalendarAPI::AccessToken = "";
 
