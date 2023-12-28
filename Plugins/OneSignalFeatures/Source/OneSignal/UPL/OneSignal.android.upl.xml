@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+
+	Copyright Pandores Marketplace 2023. All Rights Reserved. 
+
+-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<init>
+		<log text="One Signal UPL init."/>
+	</init>
+  
+	<resourceCopies>
+	</resourceCopies>
+  
+	<AARImports>
+	</AARImports>
+
+	<gradleProperties>
+		<insert>
+			android.useAndroidX=true
+			android.enableJetifier=true
+		</insert>
+	</gradleProperties>
+
+	<baseBuildGradleAdditions>
+		<insert>
+			<![CDATA[			  
+			
+			allprojects {
+				repositories {
+					google()
+					mavenCentral()
+					gradlePluginPortal()
+					jcenter()
+					maven {
+						url 'https://mvnrepository.com/artifact/androidx.room/room-common'
+					}
+				}
+			  
+				def mappings = [
+					'android.support.annotation': 'androidx.annotation',
+					'android.arch.lifecycle': 'androidx.lifecycle',
+					'android.support.v4.app.NotificationCompat': 'androidx.core.app.NotificationCompat',
+					'android.support.v4.app.ActivityCompat': 'androidx.core.app.ActivityCompat',
+					'android.support.v4.content.ContextCompat': 'androidx.core.content.ContextCompat',
+					'android.support.v4.app.NotificationManagerCompat': 'androidx.core.app.NotificationManagerCompat',
+					'android.support.v4.content.FileProvider': 'androidx.core.content.FileProvider',
+					'android.support.v13.app.FragmentCompat': 'androidx.legacy.app.FragmentCompat',
+					'android.arch.lifecycle.Lifecycle': 'androidx.lifecycle.Lifecycle',
+					'android.arch.lifecycle.LifecycleObserver': 'androidx.lifecycle.LifecycleObserver',
+					'android.arch.lifecycle.OnLifecycleEvent': 'androidx.lifecycle.OnLifecycleEvent',
+					'android.arch.lifecycle.ProcessLifecycleOwner': 'androidx.lifecycle.ProcessLifecycleOwner',
+					'AppCompatActivity': 'Activity',
+				]
+
+				beforeEvaluate { project ->
+					if (project.ext.has('HasUpdatedAndroidX'))
+					{
+						return
+					}
+					
+					project.ext.set('HasUpdatedAndroidX', true)
+				
+					println ""
+					println "Updating to AndroidX:"
+					project.rootProject.projectDir.traverse(type: groovy.io.FileType.FILES, nameFilter: ~/.*\.java$/) { f ->
+						mappings.each { entry ->
+							if (f.getText('UTF-8').contains(entry.key)) {
+								println " -> Updating ${entry.key.padRight(50)} to ${entry.value.padRight(45)} in file ${f}"
+								ant.replace(file: f, token: entry.key, value: entry.value)
+							}
+						}
+					}
+				}
+			  
+				afterEvaluate {
+					repositories {
+						//flatDir { }
+					}
+				}
+			}
+			]]>
+		</insert>
+	</baseBuildGradleAdditions>
+
+	<androidManifestUpdates>
+	</androidManifestUpdates>
+
+	<buildscriptGradleAdditions>
+		<insert>
+			<![CDATA[
+			
+			  repositories {
+				google()
+				mavenCentral()
+				gradlePluginPortal()
+				jcenter()
+			  }
+			  dependencies {
+			      classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]'
+			  }
+			]]>
+		</insert>
+	</buildscriptGradleAdditions>
+
+	<buildGradleAdditions>
+		<insert>
+			<![CDATA[
+			
+			//plugins {
+			//    id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+			//}
+			
+			android {
+				compileOptions {
+					sourceCompatibility JavaVersion.VERSION_1_8
+					targetCompatibility JavaVersion.VERSION_1_8
+				}
+			}
+			
+			project.ext.OneSignal = true
+			
+			dependencies {
+				implementation fileTree(dir: 'libs', include: ['*.jar'])
+				implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+			}
+			
+			]]>
+		</insert>
+	</buildGradleAdditions>
+  
+	<proguardAdditions>
+		<insert>
+			-keep class com.onesignal.** { *; }
+		</insert>
+	</proguardAdditions>
+
+	<prebuildCopies>
+	</prebuildCopies>
+	
+	<gradleCopies>
+	</gradleCopies>
+
+	<resourceCopies>
+	</resourceCopies>
+
+	<gameActivityAllowedRemoteNotificationsAdditions>
+	</gameActivityAllowedRemoteNotificationsAdditions>
+
+	<gameActivityImportAdditions>
+		<insert>
+			<![CDATA[
+import com.onesignal.OneSignal;
+import com.onesignal.OSNotificationAction;
+import com.onesignal.OSDeviceState;
+import com.onesignal.OSOutcomeEvent;
+import com.onesignal.OSPermissionObserver;
+import com.onesignal.OSPermissionStateChanges;
+import com.onesignal.OSSubscriptionObserver;
+import com.onesignal.OSSubscriptionStateChanges;
+import com.onesignal.OSSMSSubscriptionObserver;
+import com.onesignal.OSSMSSubscriptionStateChanges;
+import com.onesignal.OSEmailSubscriptionObserver;
+import com.onesignal.OSEmailSubscriptionStateChanges;
+			]]>
+		</insert>
+	</gameActivityImportAdditions>
+	
+	<gameActivityClassAdditions>
+		<insert>
+			<![CDATA[
+			
+	/**
+	 * OneSignalOutcomeEvent methods wrapper.
+	*/
+	public int AndroidThunk_OSOutcomeEvent_getSession(Object outcomeEvent)
+	{
+		return ((OSOutcomeEvent)outcomeEvent).getSession().ordinal();
+	}
+	
+	public String[] AndroidThunk_OSOutcomeEvent_getNotificationIds(Object outcomeEvent)
+	{
+		OSOutcomeEvent outcome = (OSOutcomeEvent)outcomeEvent;
+		
+		String[] ids = new String[outcome.getNotificationIds().length()];
+		
+		for (int i = 0; i < outcome.getNotificationIds().length(); ++i)
+		{
+			Object value = outcome.getNotificationIds().opt(i);
+			ids[i] = value == null ?  "" : value.toString();
+		}
+		
+		return ids;
+	}
+	
+	public String AndroidThunk_OSOutcomeEvent_getName(Object outcomeEvent)
+	{
+		return ((OSOutcomeEvent)outcomeEvent).getName();
+	}
+	
+	public long AndroidThunk_OSOutcomeEvent_getTimestamp(Object outcomeEvent)
+	{
+		return ((OSOutcomeEvent)outcomeEvent).getTimestamp();
+	}
+	
+	public float AndroidThunk_OSOutcomeEvent_getWeight(Object outcomeEvent)
+	{
+		return ((OSOutcomeEvent)outcomeEvent).getWeight();
+	}
+	
+	/**
+	 * OneSignalNotificationActionType methods wrapper.
+	*/
+	public int AndroidThunk_OSNotificationActionType_getType(Object notification)
+	{
+		return ((OSNotificationAction)notification).getType().ordinal();
+	}
+	
+	public String AndroidThunk_OSNotificationActionType_getActionId(Object notification)
+	{
+		return ((OSNotificationAction)notification).getActionId();
+	}
+	
+	/**
+	 * OneSignalDeviceState methods wrapper.
+	*/
+	public boolean AndroidThunk_OSDeviceState_areNotificationsEnabled(Object state)
+	{
+		return ((OSDeviceState)state).areNotificationsEnabled();
+	}
+	
+	public boolean AndroidThunk_OSDeviceState_isPushDisabled(Object state)
+	{
+		return ((OSDeviceState)state).isPushDisabled();
+	}
+	
+	public boolean AndroidThunk_OSDeviceState_isSubscribed(Object state)
+	{
+		return ((OSDeviceState)state).isSubscribed();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getUserId(Object state)
+	{
+		return ((OSDeviceState)state).getUserId();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getPushToken(Object state)
+	{
+		return ((OSDeviceState)state).getPushToken();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getEmailUserId(Object state)
+	{
+		return ((OSDeviceState)state).getEmailUserId();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getEmailAddress(Object state)
+	{
+		return ((OSDeviceState)state).getEmailAddress();
+	}
+	
+	public boolean AndroidThunk_OSDeviceState_isEmailSubscribed(Object state)
+	{
+		return ((OSDeviceState)state).isEmailSubscribed();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getSMSUserId(Object state)
+	{
+		return ((OSDeviceState)state).getSMSUserId();
+	}
+	
+	public String AndroidThunk_OSDeviceState_getSmsNumber(Object state)
+	{
+		return ((OSDeviceState)state).getSMSNumber();
+	}
+	
+	public boolean AndroidThunk_OSDeviceState_isSMSSubscribed(Object state)
+	{
+		return ((OSDeviceState)state).isSMSSubscribed();
+	}
+	
+	public String AndroidThunk_OSDeviceState_toJson(Object state)
+	{
+		return ((OSDeviceState)state).toJSONObject().toString();
+	}
+	
+	/**
+	 * One Signal Library methods wrapper.
+	*/
+	private native void OneSignalNativeExecuteTagsSuccessCallback(boolean bExecute, long data, String tags);
+	private native void OneSignalNativeExecuteSuccessCallback(boolean bExecute, long data);
+	private native void OneSignalNativeExecuteFailureCallback(boolean bExecute, long data, int ErrorCode, String ErrorMessage);
+	private native void OneSignalNativeExecuteOutcomeCallback(long data, Object outcome);
+	
+	public String AndroidThunk_OneSignal_getSDKVersion()
+	{
+		return OneSignal.getSdkVersionRaw();
+	}
+	
+	public void AndroidThunk_OneSignal_initialize()
+	{
+		OneSignal.initWithContext(this);
+	}
+	
+	public void AndroidThunk_OneSignal_setAppId(String appId)
+	{
+		OneSignal.setAppId(appId);
+	}
+	
+	public void AndroidThunk_OneSignal_setLogLevel(int logLevel, int visualLogLevel)
+	{
+		OneSignal.setLogLevel(logLevel, visualLogLevel);
+	}
+	
+	public void AndroidThunk_OneSignal_log(int level, String message)
+	{
+		OneSignal.onesignalLog(OneSignal.LOG_LEVEL.values()[level], message);
+	}
+	
+	public Object AndroidThunk_OneSignal_getDeviceState()
+	{
+		return OneSignal.getDeviceState();
+	}
+	
+	public void AndroidThunk_OneSignal_setRequiresUserPrivacyConsent(boolean bValue)
+	{
+		OneSignal.setRequiresUserPrivacyConsent(bValue);
+	}
+	
+	public boolean AndroidThunk_OneSignal_isLocationShared()
+	{
+		return OneSignal.isLocationShared();
+	}
+	
+	public void AndroidThunk_OneSignal_postNotification(String json, final long success, final long failure)
+	{
+		JSONObject jsonObject = null;
+		try 
+		{
+			jsonObject = new JSONObject(json);
+		} 
+		catch (JSONException e) 
+		{
+			OneSignalNativeExecuteSuccessCallback(false, success);
+			OneSignalNativeExecuteFailureCallback(true, failure, 1, e.getMessage());
+			return;
+		}
+		
+		try
+		{
+			OneSignal.postNotification(jsonObject, new OneSignal.PostNotificationResponseHandler() 
+			{
+				@Override
+				public void onSuccess(JSONObject response) 
+				{
+					OneSignalNativeExecuteSuccessCallback(true, success);
+					OneSignalNativeExecuteFailureCallback(false, failure, 0, null);
+				}
+				
+				@Override
+				public void onFailure(JSONObject response) 
+				{
+					OneSignalNativeExecuteSuccessCallback(false, success);
+					OneSignalNativeExecuteFailureCallback(true, failure, 2, response.toString());
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			OneSignalNativeExecuteSuccessCallback(false, success);
+			OneSignalNativeExecuteFailureCallback(true, failure, 3, e.getMessage());
+		}
+	}
+	
+	public boolean AndroidThunk_OneSignal_isInAppMessagingPaused()
+	{
+		return OneSignal.isInAppMessagingPaused();
+	}
+	
+	public String AndroidThunk_OneSignal_getTriggerValue(String key)
+	{
+		return OneSignal.getTriggerValueForKey(key).toString();
+	}
+	
+	public boolean AndroidThunk_OneSignal_hasTriggerValue(String key)
+	{
+		return OneSignal.getTriggerValueForKey(key) != null;
+	}
+	
+	public void AndroidThunk_OneSignal_promptLocation()
+	{
+		OneSignal.promptLocation();
+	}
+	
+	public void AndroidThunk_OneSignal_setLocationShared(boolean bValue)
+	{
+		OneSignal.setLocationShared(bValue);
+	}
+	
+	public void AndroidThunk_OneSignal_sendTag(String key, String value)
+	{
+		OneSignal.sendTag(key, value);
+	}
+	
+	public void AndroidThunk_OneSignal_sendTags(String json)
+	{
+		OneSignal.sendTags(json);
+	}
+	
+	public void AndroidThunk_OneSignal_getTags(long success, long failure)
+	{
+		OneSignal.getTags(new OneSignal.OSGetTagsHandler()
+		{
+			@Override
+			public void tagsAvailable(JSONObject tags)
+			{
+				if (tags != null)
+				{
+					OneSignalNativeExecuteTagsSuccessCallback(false, success, null);
+					OneSignalNativeExecuteFailureCallback(true, failure, 1, "Tags were null.");
+				}
+				else
+				{					
+					OneSignalNativeExecuteTagsSuccessCallback(true, success, tags.toString());
+					OneSignalNativeExecuteFailureCallback(false, failure, 0, null);				
+				}
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_deleteTag(String key)
+	{
+		OneSignal.deleteTag(key);
+	}
+	
+	public void AndroidThunk_OneSignal_deleteTags(String[] keys)
+	{
+		OneSignal.deleteTags(Arrays.asList(keys));
+	}
+	
+	public void AndroidThunk_OneSignal_setEmail(String email, String hashToken, long success, long failure)
+	{
+		OneSignal.setEmail(email, hashToken, new OneSignal.EmailUpdateHandler()
+		{
+			@Override
+			public void onSuccess()
+			{
+				OneSignalNativeExecuteSuccessCallback(true, success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);	
+			}
+			
+			@Override
+			public void onFailure(OneSignal.EmailUpdateError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true, failure, error.getType().ordinal(), error.getMessage());				
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_logoutEmail(long success, long failure)
+	{
+		OneSignal.logoutEmail(new OneSignal.EmailUpdateHandler()
+		{
+			@Override
+			public void onSuccess()
+			{
+				OneSignalNativeExecuteSuccessCallback(true, success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);	
+			}
+			
+			@Override
+			public void onFailure(OneSignal.EmailUpdateError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true, failure, error.getType().ordinal(), error.getMessage());				
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_setSMS(String sms, String hashToken, long success, long failure)
+	{
+		OneSignal.setSMSNumber(sms, hashToken, new OneSignal.OSSMSUpdateHandler()
+		{
+			@Override
+			public void onSuccess(JSONObject result)
+			{
+				OneSignalNativeExecuteSuccessCallback(true, success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);	
+			}
+			
+			@Override
+			public void onFailure(OneSignal.OSSMSUpdateError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true, failure, error.getType().ordinal(), error.getMessage());				
+			}
+		});	
+	}
+	
+	public void AndroidThunk_OneSignal_logoutSMS(long success, long failure)
+	{
+		OneSignal.logoutSMSNumber(new OneSignal.OSSMSUpdateHandler()
+		{
+			@Override
+			public void onSuccess(JSONObject result)
+			{
+				OneSignalNativeExecuteSuccessCallback(true, success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);	
+			}
+			
+			@Override
+			public void onFailure(OneSignal.OSSMSUpdateError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true, failure, error.getType().ordinal(), error.getMessage());				
+			}
+		});	
+	}
+	
+	public void AndroidThunk_OneSignal_setLanguage(String language, long success, long failure)
+	{
+		OneSignal.setLanguage(language, new OneSignal.OSSetLanguageCompletionHandler()
+		{
+			@Override
+			public void onSuccess(String results)
+			{
+				OneSignalNativeExecuteSuccessCallback(true, success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);	
+			}
+			
+			@Override
+			public void onFailure(OneSignal.OSLanguageError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true, failure, error.getCode(), error.getMessage());	
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_pauseInAppMessage(boolean bPaused)
+	{
+		OneSignal.pauseInAppMessages(bPaused);
+	}
+
+	public void AndroidThunk_OneSignal_addTrigger(String key, String value)
+	{
+		OneSignal.addTrigger(key, value);
+	}
+
+	public void AndroidThunk_OneSignal_addTrigger(String key, long value)
+	{
+		OneSignal.addTrigger(key, new Long(value));
+	}
+	
+	public void AndroidThunk_OneSignal_addTriggers(String[] keys, String[] values)
+	{
+		Map<String, Object> triggers = new HashMap<String, Object>();
+		
+		for (int i = 0; i < keys.length; ++i)
+		{
+			triggers.put(keys[i], values[i]);
+		}
+		
+		OneSignal.addTriggers(triggers);
+	}
+	
+	public void AndroidThunk_OneSignal_addTriggers(String[] keys, long[] values)
+	{
+		Map<String, Object> triggers = new HashMap<String, Object>();
+		
+		for (int i = 0; i < keys.length; ++i)
+		{
+			triggers.put(keys[i], new Long(values[i]));
+		}
+		
+		OneSignal.addTriggers(triggers);
+	}
+
+	public void AndroidThunk_OneSignal_removeTrigger(String key)
+	{
+		OneSignal.removeTriggerForKey(key);
+	}
+
+	public void AndroidThunk_OneSignal_removeTriggers(String[] keys)
+	{
+		OneSignal.removeTriggersForKeys(Arrays.asList(keys));
+	}
+	
+	public String[] AndroidThunk_OneSignal_getTriggers()
+	{
+		Map<String, Object> triggers = OneSignal.getTriggers();
+		
+		final int triggerCount = triggers.size();
+		String[] retValues = new String[2 * triggerCount];
+		
+		int i = 0;
+		for (Map.Entry<String, Object> trigger : triggers.entrySet())
+		{
+			retValues[i] = trigger.getKey();
+			retValues[i + triggerCount] = trigger.getValue().toString();
+			
+			i++;
+		}
+		
+		return retValues;
+	}
+	
+	public void AndroidThunk_OneSignal_sendOutcome(String name, final long callback)
+	{
+		OneSignal.sendOutcome(name, new OneSignal.OutcomeCallback()
+		{
+			@Override
+			public void onSuccess(OSOutcomeEvent outcomeEvent)
+			{
+				OneSignalNativeExecuteOutcomeCallback(callback, outcomeEvent);
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_sendUniqueOutcome(String name, final long callback)
+	{
+		OneSignal.sendUniqueOutcome(name, new OneSignal.OutcomeCallback()
+		{
+			@Override
+			public void onSuccess(OSOutcomeEvent outcomeEvent)
+			{
+				OneSignalNativeExecuteOutcomeCallback(callback, outcomeEvent);
+			}
+		});		
+	}
+	
+	public void AndroidThunk_OneSignal_sendOutcomeWithValue(String name, float Value, final long callback)
+	{
+		OneSignal.sendOutcomeWithValue(name, Value, new OneSignal.OutcomeCallback()
+		{
+			@Override
+			public void onSuccess(OSOutcomeEvent outcomeEvent)
+			{
+				OneSignalNativeExecuteOutcomeCallback(callback, outcomeEvent);
+			}
+		});	
+	}
+	
+	public void AndroidThunk_OneSignal_setExternalUserId(String externalId, String externalIdAuthHash, final long success, final long failure)
+	{
+		OneSignal.setExternalUserId(externalId, externalIdAuthHash, new OneSignal.OSExternalUserIdUpdateCompletionHandler()
+		{
+			@Override
+			public void onSuccess(JSONObject results)
+			{
+				OneSignalNativeExecuteSuccessCallback(true,  success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);
+			}
+			
+			@Override
+			public void onFailure(OneSignal.ExternalIdError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true,  failure, error.getType().ordinal(), error.getMessage());
+			}
+		});
+	}
+	
+	public void AndroidThunk_OneSignal_removeExternalUserId(final long success, final long failure)
+	{
+		OneSignal.removeExternalUserId(new OneSignal.OSExternalUserIdUpdateCompletionHandler()
+		{
+			@Override
+			public void onSuccess(JSONObject results)
+			{
+				OneSignalNativeExecuteSuccessCallback(true,  success);
+				OneSignalNativeExecuteFailureCallback(false, failure, 0, null);
+			}
+			
+			@Override
+			public void onFailure(OneSignal.ExternalIdError error)
+			{
+				OneSignalNativeExecuteSuccessCallback(false, success);
+				OneSignalNativeExecuteFailureCallback(true,  failure, error.getType().ordinal(), error.getMessage());
+			}
+		});
+	}
+	
+	/**
+	 * OneSignal observers.
+	*/
+	
+	private native void OneSignalNativePermissionObserver(Object observer);
+	private OSPermissionObserver PermissionObserver;
+	public void AndroidThunk_OneSignal_addPermissionObserver()
+	{
+		if (PermissionObserver != null)
+		{
+			OneSignal.removePermissionObserver(PermissionObserver);
+		}
+		
+		PermissionObserver = new OSPermissionObserver()
+		{
+			@Override
+			public void onOSPermissionChanged(OSPermissionStateChanges stateChanges)
+			{
+				OneSignalNativePermissionObserver(stateChanges.toString());
+			}
+		};
+		
+		OneSignal.addPermissionObserver(PermissionObserver);
+	}
+	
+	private native void OneSignalNativeEmailSubscriptionObserver(Object observer);
+	private OSEmailSubscriptionObserver emailSubscriptionObserver;
+	public void AndroidThunk_OneSignal_addEmailSubscriptionObserver()
+	{
+		if (emailSubscriptionObserver != null)
+		{
+			OneSignal.removeEmailSubscriptionObserver(emailSubscriptionObserver);
+		}
+		
+		emailSubscriptionObserver = new OSEmailSubscriptionObserver()
+		{
+			@Override
+			public void onOSEmailSubscriptionChanged(OSEmailSubscriptionStateChanges stateChanges)
+			{
+				OneSignalNativeEmailSubscriptionObserver(stateChanges.toString());
+			}
+		};
+		
+		OneSignal.addEmailSubscriptionObserver(emailSubscriptionObserver);
+	}
+	
+	private native void OneSignalNativeSMSSubscriptionObserver(Object observer);
+	private OSSMSSubscriptionObserver SMSSubscriptionObserver;
+	public void AndroidThunk_OneSignal_addSMSSubscriptionObserver()
+	{
+		if (SMSSubscriptionObserver != null)
+		{
+			OneSignal.removeSMSSubscriptionObserver(SMSSubscriptionObserver);
+		}
+		
+		SMSSubscriptionObserver = new OSSMSSubscriptionObserver()
+		{
+			@Override
+			public void onSMSSubscriptionChanged(OSSMSSubscriptionStateChanges stateChanges)
+			{
+				OneSignalNativeSMSSubscriptionObserver(stateChanges.toString());
+			}
+		};
+		
+		OneSignal.addSMSSubscriptionObserver(SMSSubscriptionObserver);
+	}
+	
+	private native void OneSignalNativeSubscriptionObserver(Object observer);
+	private OSSubscriptionObserver subscriptionObserver;
+	public void AndroidThunk_OneSignal_addSubscriptionObserver()
+	{
+		if (subscriptionObserver != null)
+		{
+			OneSignal.removeSubscriptionObserver(subscriptionObserver);
+		}
+		
+		subscriptionObserver = new OSSubscriptionObserver()
+		{
+			@Override
+			public void onOSSubscriptionChanged(OSSubscriptionStateChanges stateChanges)
+			{
+				OneSignalNativeSubscriptionObserver(stateChanges.toString());
+			}
+		};
+		
+		OneSignal.addSubscriptionObserver(subscriptionObserver);
+	}	
+			]]>
+		</insert>
+	</gameActivityClassAdditions>
+
+	<gameActivityOnNewIntentAdditions>
+		<insert>
+			<![CDATA[
+			
+			]]>
+		</insert>
+	</gameActivityOnNewIntentAdditions>
+</root>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

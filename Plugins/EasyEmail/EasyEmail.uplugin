@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.1.12",
+	"FriendlyName": "Easy Email",
+	"Description": "Easy Email allows you to send emails directly from your game.",
+	"Category": "Email",
+	"CreatedBy": "Pandores",
+	"CreatedByURL": "",
+	"DocsURL": "https://github.com/Pandoa/EasyEmail/blob/master/README.md",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/4cf6d62feb37458ca753a05961f9628a",
+	"SupportURL": "https://github.com/Pandoa/EasyEmail/blob/master/README.md",
+	"EngineVersion": "5.1.0",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "EasyEmail",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux"
+			]
+		}
+	]
+}

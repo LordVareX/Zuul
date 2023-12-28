@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.1",
+	"FriendlyName": "OneSignal",
+	"Description": "OneSignal is the fastest and most reliable service to send push notifications, in-app messages, SMS, and emails.",
+	"Category": "Messaging",
+	"CreatedBy": "Pandores",
+	"CreatedByURL": "https://www.unrealengine.com/marketplace/en-US/profile/Pandores?count=50&sortBy=effectiveDate&sortDir=DESC&start=0",
+	"DocsURL": "https://pandoa.github.io/OneSignal/",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/c1aa51891e43467dbf854748c86237be",
+	"SupportURL": "mailto:pandores.marketplace@gmail.com",
+	"EngineVersion": "5.1.0",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "OneSignal",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"IOS",
+				"Android",
+				"Win64",
+				"Linux",
+				"Mac"
+			]
+		}
+	]
+}

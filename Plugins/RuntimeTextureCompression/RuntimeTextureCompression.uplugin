@@ -1,0 +1,29 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "RuntimeTextureCompression",
+	"Description": "This allows you to use a replicate texture over Unreal Engine network system.",
+	"Category": "Other",
+	"CreatedBy": "MeoPlay",
+	"CreatedByURL": "https://www.meoplay.com",
+	"DocsURL": "https://drive.google.com/file/d/1nRPop3wNf522GmwXZ9sGl8jl8JSRw2nZ/view?usp=share_link",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/efd0b4af4d6b4a9db5218032e3e26de9",
+	"SupportURL": "https://www.meoplay.com",
+	"EngineVersion": "5.1.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "RuntimeTextureCompression",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64",
+				"Linux",
+				"IOS",
+				"Android"
+			]
+		}
+	]
+}

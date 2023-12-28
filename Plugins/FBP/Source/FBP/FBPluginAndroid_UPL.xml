@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <resourceCopies>
+        <copyFile src="$S(PluginDir)/../../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/app/google-services.json" />
+        <copyFile src="$S(BuildDir)/../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/app/google-services.json" />
+        <copyFile src="$S(PluginDir)/../../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/AFSProject/app/google-services.json" />
+        <copyFile src="$S(BuildDir)/../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/AFSProject/app/google-services.json" />
+        
+    </resourceCopies>
+
+    <prebuildCopies>
+        <copyFile src="$S(PluginDir)/../../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/app/google-services.json" />
+        <copyFile src="$S(BuildDir)/../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/app/google-services.json" />
+        <copyFile src="$S(PluginDir)/../../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/AFSProject/app/google-services.json" />
+        <copyFile src="$S(BuildDir)/../../../google-services.json"
+                  dst="$S(BuildDir)/gradle/AFSProject/app/google-services.json" />
+    </prebuildCopies>
+    <proguardAdditions>
+        <insert>
+
+        -dontwarn com.google.firebase.**
+        -keep class com.google.firebase.** { *; }
+        -keep interface com.google.firebase.** { *; }
+
+        -dontwarn com.google.android.gms.**
+        -keep class com.google.android.gms.** { *; }
+        -keep interface com.google.android.gms.** { *; }
+        </insert>
+    </proguardAdditions>
+    <buildscriptGradleAdditions>
+        <insert>
+            dependencies {
+            classpath 'com.google.gms:google-services:4.3.10'
+            }
+        </insert>
+    </buildscriptGradleAdditions>
+
+    <buildGradleAdditions>
+        <insert>
+           
+            android {
+            compileOptions {
+            targetCompatibility JavaVersion.VERSION_1_8
+            sourceCompatibility JavaVersion.VERSION_1_8
+            }
+            }
+
+            dependencies {
+            // Override defaults
+            implementation 'com.google.android.gms:play-services-nearby:18.0.2'
+            implementation 'com.google.android.gms:play-services-plus:17.0.0'
+            implementation 'com.google.android.gms:play-services-auth:20.1.0'
+            implementation 'com.google.android.gms:play-services-games:22.0.0'
+
+            // Firebase stuff
+            implementation 'com.google.android.gms:play-services-base:18.0.1'
+            implementation 'com.google.firebase:firebase-analytics:20.0.2'
+            implementation 'com.google.firebase:firebase-auth:21.0.1'
+            implementation 'com.google.firebase:firebase-firestore:24.0.1'
+            implementation 'com.google.firebase:firebase-storage:20.0.0'
+            implementation 'com.google.firebase:firebase-database:20.0.3'
+            
+            }
+            // Needed to download Firebase dependencies
+            repositories {
+            maven { url 'https://maven.google.com' }
+            google()
+            }
+            apply plugin: 'com.google.gms.google-services'
+        </insert>
+    </buildGradleAdditions>
+
+    <baseBuildGradleAdditions>
+      <insert>
+        allprojects {
+        def mappings = [
+        'android.arch.lifecycle.Lifecycle': 'androidx.lifecycle.Lifecycle',
+        'android.arch.lifecycle.LifecycleObserver': 'androidx.lifecycle.LifecycleObserver',
+        'android.arch.lifecycle.OnLifecycleEvent': 'androidx.lifecycle.OnLifecycleEvent',
+        'android.arch.lifecycle.ProcessLifecycleOwner': 'androidx.lifecycle.ProcessLifecycleOwner',
+        'android.arch.lifecycle': 'androidx.lifecycle',
+        'android.support.annotation': 'androidx.annotation',
+        'android.support.v13.app.FragmentCompat': 'androidx.legacy.app.FragmentCompat',
+        'android.support.v4.app.ActivityCompat': 'androidx.core.app.ActivityCompat',
+        'android.support.v4.app.NotificationCompat': 'androidx.core.app.NotificationCompat',
+        'android.support.v4.app.NotificationManagerCompat': 'androidx.core.app.NotificationManagerCompat',
+        'android.support.v4.content.ContextCompat': 'androidx.core.content.ContextCompat',
+        'android.support.v4.content.FileProvider': 'androidx.core.content.FileProvider',
+        ]
+
+        beforeEvaluate { project ->
+        project.rootProject.projectDir.traverse(type: groovy.io.FileType.FILES, nameFilter: ~/.*\.java$/) { f ->
+        mappings.each { entry ->
+        if (f.getText('UTF-8').contains(entry.key)) {
+        println "Updating ${entry.key} to ${entry.value} in file ${f}"
+        ant.replace(file: f, token: entry.key, value: entry.value)
+        }
+        }
+        }
+        }
+        }
+
+
+      </insert>
+    </baseBuildGradleAdditions>
+
+
+</root>
